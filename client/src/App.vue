@@ -1,21 +1,49 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <Gallery/>
+    <mdb-container class="mt-5">
+    <mdb-row>
+      <GalleryComponent
+        v-for="imageName in imageNameList"
+        :key="imageName.id"
+        :imageName="imageName"
+        />
+    </mdb-row>
+  </mdb-container>
   </div>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
-import Gallery from './components/Gallery.vue'
+import GalleryComponent from './components/GalleryComponent.vue'
+import {mdbContainer, mdbRow} from "mdbvue";
+const axios = require('axios').default;
 
 export default {
   name: 'App',
   components: {
-    // HelloWorld
-    Gallery
-  }
+    GalleryComponent,
+    mdbContainer,
+    mdbRow
+  },
+  data: function() {
+    return {
+      imageNameList: [],
+    }
+  },
+  methods: {
+    getImageList() {
+      const path = 'http://localhost:5000/images/list';
+      axios.get(path)
+        .then((res) => {
+          this.imageNameList = res.data
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  },
+  created() {
+    this.getImageList();
+  },
 }
 </script>
 
